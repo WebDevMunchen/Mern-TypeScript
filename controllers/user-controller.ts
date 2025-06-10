@@ -12,10 +12,10 @@ export const registerUser = async (
 ): Promise<void> => {
   try {
     const { password, email, role } = req.body;
+    
+    const lowercasedEmail = email.toLowerCase();
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const findUser = await User.findOne({ email });
+    const findUser = await User.findOne({ email: lowercasedEmail });
 
     if (findUser) {
       const error: CustomError = new Error(
@@ -25,7 +25,7 @@ export const registerUser = async (
       throw error;
     }
 
-    const user = await User.create({ password: hashedPassword, email, role });
+    const user = await User.create({ password, email, role });
 
     res.status(201).json({ email: user.email, role: user.role });
   } catch (error) {
