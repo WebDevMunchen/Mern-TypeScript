@@ -16,7 +16,7 @@ export const registerUser = asyncWrapper(
 
     if (findUser) {
       const error: CustomError = new Error(
-        "User not already exists!"
+        "User already exists!"
       ) as CustomError;
       error.statusCode = 400;
       throw error;
