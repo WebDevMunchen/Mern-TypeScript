@@ -10,13 +10,13 @@ export const registerUser = asyncWrapper(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { password, email, role } = req.body;
 
-    const lowercasedEmail = email.toLowerCase();
+    // const lowercasedEmail = email.toLowerCase();
 
-    const findUser = await User.findOne({ email: lowercasedEmail });
+    const findUser = await User.findOne({ email });
 
     if (findUser) {
       const error: CustomError = new Error(
-        "User not already exists!"
+        "User already exists!"
       ) as CustomError;
       error.statusCode = 400;
       throw error;
