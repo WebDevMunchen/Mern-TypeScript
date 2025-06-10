@@ -4,20 +4,19 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { AuthenticatedRequest } from "../types/AuthenticatedRequest";
 import { CustomError } from "../types/CustomError";
+import { asyncWrapper } from "../utils/asyncWrapper";
 
-export const registerUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
+export const registerUser = asyncWrapper(
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { password, email, role } = req.body;
 
-    const findUser = await User.findOne({ email });
+    const lowercasedEmail = email.toLowerCase();
+
+    const findUser = await User.findOne({ email: lowercasedEmail });
 
     if (findUser) {
       const error: CustomError = new Error(
-        "User already exists!"
+        "User not already exists!"
       ) as CustomError;
       error.statusCode = 400;
       throw error;
@@ -26,17 +25,11 @@ export const registerUser = async (
     const user = await User.create({ password, email, role });
 
     res.status(201).json({ email: user.email, role: user.role });
-  } catch (error) {
-    next(error);
   }
-};
+);
 
-export const login = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
+export const login = asyncWrapper(
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email }).select("+password");
@@ -66,10 +59,8 @@ export const login = async (
     res
       .cookie("access_token", token, { httpOnly: true, maxAge: 28800000 })
       .json(payload);
-  } catch (error) {
-    next(error);
   }
-};
+);
 
 export const logout = async (
   req: Request,
@@ -81,12 +72,8 @@ export const logout = async (
     .json({ message: "Logged out!" });
 };
 
-export const getProfile = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
+export const getProfile = asyncWrapper(
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = (req as AuthenticatedRequest).user;
 
     const userProfile = await User.findById(id);
@@ -98,17 +85,11 @@ export const getProfile = async (
     }
 
     res.status(200).json(userProfile);
-  } catch (error) {
-    next(error);
   }
-};
+);
 
-export const getUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
+export const getUser = asyncWrapper(
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
 
     const user = await User.findById(id);
@@ -120,17 +101,11 @@ export const getUser = async (
     }
 
     res.status(200).json(user);
-  } catch (error) {
-    next(error);
   }
-};
+);
 
-export const updateUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
+export const updateUser = asyncWrapper(
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     const { email, role } = req.body;
 
@@ -152,17 +127,11 @@ export const updateUser = async (
     });
 
     res.status(200).json(updatedUser);
-  } catch (error) {
-    next(error);
   }
-};
+);
 
-export const deleteUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
+export const deleteUser = asyncWrapper(
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
 
     const user = await User.findByIdAndDelete(id);
@@ -174,7 +143,5 @@ export const deleteUser = async (
     }
 
     res.status(200).json({ message: "User deleted!" });
-  } catch (error) {
-    next(error);
   }
-};
+);
