@@ -13,8 +13,6 @@ export const registerUser = async (
   try {
     const { password, email, role } = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const findUser = await User.findOne({ email });
 
     if (findUser) {
@@ -25,7 +23,7 @@ export const registerUser = async (
       throw error;
     }
 
-    const user = await User.create({ password: hashedPassword, email, role });
+    const user = await User.create({ password, email, role });
 
     res.status(201).json({ email: user.email, role: user.role });
   } catch (error) {
