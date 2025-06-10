@@ -10,8 +10,6 @@ export const registerUser = asyncWrapper(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { password, email, role } = req.body;
 
-    // const lowercasedEmail = email.toLowerCase();
-
     const findUser = await User.findOne({ email });
 
     if (findUser) {
