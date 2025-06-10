@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { CustomError } from "../types/CustomError";
 
 export const authnenticate = (
   req: Request,
@@ -10,8 +11,9 @@ export const authnenticate = (
     const { access_token: token } = req.cookies;
 
     if (!token) {
-      res.status(409).json({ message: "Forbidden!" });
-      return;
+      const error: CustomError = new Error("Forbidden!") as CustomError;
+      error.statusCode = 409;
+      throw error;
     }
 
     const payload = jwt.verify(token, process.env.JWT_SECRET!) as {
@@ -24,7 +26,6 @@ export const authnenticate = (
 
     next();
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Server error!" });
+     next(error)
   }
 };
