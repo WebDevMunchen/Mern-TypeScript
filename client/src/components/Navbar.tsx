@@ -17,6 +17,7 @@ export default function Navbar() {
             </>
           ) : (
             <>
+              <NavLink to={"/protected"}>Protected</NavLink>
               <NavLink to={"/profile"}>Profile</NavLink>
               <button onClick={() => authContext?.logout()}>Logout</button>
             </>
