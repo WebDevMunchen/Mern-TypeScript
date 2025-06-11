@@ -1,19 +1,20 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { axiosClient } from "../utils/axiosClient";
+import type { LoginData } from "../context/types";
 
-type Inputs = {
-  email: string;
-  password: string;
-};
+// type Inputs = {
+//   email: string;
+//   password: string;
+// };
 
 export default function Register() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<LoginData>();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<LoginData> = async (data) => {
     axiosClient
       .post("/user/registerUser", data)
       .then(() => {
