@@ -51,6 +51,7 @@ export default function AuthProvider({
       .post("/user/logout")
       .then(() => {
         console.log("Logged out!");
+        setUser(null)
         navigate("/");
       })
       .catch((error) => {
