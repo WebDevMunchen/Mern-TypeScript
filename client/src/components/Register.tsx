@@ -2,11 +2,6 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { axiosClient } from "../utils/axiosClient";
 import type { LoginData } from "../context/types";
 
-// type Inputs = {
-//   email: string;
-//   password: string;
-// };
-
 export default function Register() {
   const {
     register,
