@@ -1,31 +1,24 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { axiosClient } from "../utils/axiosClient";
-
-type Inputs = {
-  email: string;
-  password: string;
-};
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthProvider";
+import type { LoginData } from "../context/types";
 
 export default function Login() {
+  const authContext = useContext(AuthContext);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<LoginData>();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    axiosClient
-      .post("/user/login", data)
-      .then(() => {
-        console.log("Logged in!");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const onSubmit: SubmitHandler<LoginData> = async (data) => {
+    authContext?.login(data)
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+        <h2>Login</h2>
       <input
         type="email"
         placeholder="max.musterman@net.com"
